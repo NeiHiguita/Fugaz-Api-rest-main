@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Sweet from 'sweetalert2';
 
 // Reports JPDF
 import jsPDF from "jspdf";
@@ -9,7 +10,6 @@ import "jspdf-autotable";
 import { useState } from "react";
 
 import styled from "styled-components";
-//import * as XLSX from 'xlsx';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
@@ -17,7 +17,7 @@ import "./style.css";
 //Hooks
 
 const Container = styled.div`
-  margin-top: 5rem;
+  margin-top: 3.5rem;
 `;
 
 const StyledCard = styled.div`
@@ -51,10 +51,14 @@ const TableRow = styled.tr`
 const TableHeader = styled.th`
   text-align: left;
   padding: 0.5rem;
+  width: 53%;
 `;
 
 const TableCell = styled.td`
   padding: 0.5rem;
+  text-align: center;
+  align-items: center;
+  width: 40%;
 `;
 
 const CardFooter = styled.div`
@@ -82,6 +86,8 @@ const Button = styled.button`
 
 function UsuarioIndividual({ usuario }) {
   const navigate = useNavigate();
+  const [mostrarDesglose, setMostrarDesglose] = useState(false);
+
 
   function borrarUsuario(iduser) {
     axios
@@ -96,7 +102,7 @@ function UsuarioIndividual({ usuario }) {
       });
   }
 
-  const user = useState("");
+  //const user = useState("");
 
   const generatePDFReport = () => {
     const dateGenerateReport = new Date().toDateString();
@@ -138,7 +144,7 @@ function UsuarioIndividual({ usuario }) {
     doc.autoTable({
       head: [columns],
       body: data,
-      theme: "grid",
+      theme: "striped",
       startY: 20,
       columnStyles: columnStyles,
       didDrawPage: (data) => {
@@ -151,13 +157,25 @@ function UsuarioIndividual({ usuario }) {
         );
         // Pie de página
         doc.setFontSize(12);
+        doc.text(
+          `Página ${doc.internal.getNumberOfPages()}`,
+          data.settings.margin.left,
+          doc.internal.pageSize.height - 10
+        );
+        //correo de la empresa
+        doc.setFontSize(10);
+        doc.text(
+          "Correo: fugazretro@gmail.com",
+          data.settings.margin.left,
+          doc.internal.pageSize.height - 20
+        );
       },
     });
 
     doc.save("Fugaz report.pdf");
   };
 
-  const descargarArchivos = () => {
+  /*const descargarArchivos = () => {
     const pdf = new jsPDF();
     pdf.text(20, 20, "Detalles del Usuario");
 
@@ -203,20 +221,7 @@ function UsuarioIndividual({ usuario }) {
     });
 
     pdf.save("usuario.pdf");
-  };
-
-  /*function descargarXls() {
-    const ws = XLSX.utils.table_to_sheet(document.querySelector('#pdf-container table'));
-    const wb = XLSX.utils.book_new(
-      XLSX.utils.aoa_to_sheet([
-        ['Detalles del Usuario'],
-        ['ID', 'Rol', 'Estado del Rol', 'Permiso', 'Nombre de Usuario', 'Email', 'Contraseña', 'Estado del Usuario', 'Fecha de Registro'],
-        [usuario.iduser, usuario.name_rol, usuario.state_rol, usuario.name_permission, usuario.name_user, usuario.email, usuario.passaword, usuario.state_user, usuario.date_register],
-      ])
-    );
-    XLSX.utils.book_append_sheet(wb, ws, 'usuarios');
-    XLSX.writeFile(wb, 'usuarios.xlsx');
-  }*/
+  };*/
 
   return (
     <Container>
@@ -224,16 +229,51 @@ function UsuarioIndividual({ usuario }) {
         <div className="col-md-8">
           <StyledCard>
             <div className="cn">
-              <CardHeader>
-                <h2>Detalles del Usuario</h2>
-              </CardHeader>
+
               <CardBody>
+              
+                   
                 <Table className="table table-bordered">
                   <tbody>
                     <TableRow>
+                      
                       <TableHeader>ID</TableHeader>
                       <TableCell>{usuario.iduser}</TableCell>
+                      <TableCell colSpan="2">
+                        <Button
+                          className="btn btn-info"
+                          onClick={() => {
+                            setMostrarDesglose(!mostrarDesglose);
+                          }}>
+                          Ver
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          to={`/editarusuario/${usuario.iduser}`}
+                          className="btn btn-success">
+                          Editar
+                        </Link>
+                      </TableCell>
+                      <TableCell className="d-none">
+                        <Button
+                          className="btn btn-outline-danger"
+                          onClick={generatePDFReport}>
+                          Descargar PDF
+                        </Button>
+                      </TableCell>
+                      <TableCell className="">
+                        <Button
+                          className="btn btn-danger"
+                          onClick={() => {
+                            borrarUsuario(usuario.iduser);
+                          }}>
+                          Eliminar
+                        </Button>
+                      </TableCell>
                     </TableRow>
+                    {mostrarDesglose && (
+                        <>
                     <TableRow>
                       <TableHeader>Rol</TableHeader>
                       <TableCell>{usuario.name_rol}</TableCell>
@@ -266,35 +306,8 @@ function UsuarioIndividual({ usuario }) {
                       <TableHeader>Fecha de Registro</TableHeader>
                       <TableCell>{usuario.date_register}</TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableHeader>Acciones</TableHeader>
-                      <TableCell>
-                        <Link
-                          to={`/editarusuario/${usuario.iduser}`}
-                          className="btn btn-success">
-                          Editar
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          className="btn btn-outline-danger"
-                          onClick={generatePDFReport}>
-                          Descargar PDF
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        {/*<Button className="btn btn-outline-success" onClick={descargarXls}>Descargar Excel</Button>*/}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          className="btn btn-danger d-none"
-                          onClick={() => {
-                            borrarUsuario(usuario.iduser);
-                          }}>
-                          Eliminar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                    </>
+                    )}
                   </tbody>
                 </Table>
               </CardBody>

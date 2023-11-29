@@ -1,9 +1,10 @@
 import axios from 'axios'
 import React, { useEffect, useState }  from 'react'
 import { useParams } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap';
+import { Form} from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Sweet from 'sweetalert2';
 
 function EditarUsuario() {
 

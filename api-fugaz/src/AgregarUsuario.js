@@ -4,9 +4,18 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import uniquid from 'uniquid';
 //import App from './App';
-import { Form, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
+import Sweet from 'sweetalert2';
+
+/*
+    tareas:
+    -alertas sweetalert2
+    -validaciones de buscador para los booleanos
+    -pdf para todos los registros con footer y cambiar de lado la fecha 
+    -desglosamiento
+*/
 
 function AgregarUsuario() {
     //hooks
@@ -19,8 +28,18 @@ function AgregarUsuario() {
     const [state_user, setStateuser] = useState(false);
     const [date_register, setDater] = useState('');
 
-
     function agregarUsuario() {
+        if (
+            name_rol.trim() === '' ||
+            name_permission.trim() === '' ||
+            name_user.trim() === '' ||
+            email.trim() === '' ||
+            password.trim() === '' ||
+            date_register.trim() === ''
+        ) {
+            toast.error('Por favor, completa todos los campos.');
+            return;
+        }    
         const Usuario = {
             name_rol: name_rol.trim(), 
             state_rol: state_rol,
@@ -32,6 +51,7 @@ function AgregarUsuario() {
             date_register: date_register,
             iduser: uniquid(),
         };
+        
         console.log(Usuario);
         axios
             .post('/api/usuario/Agregarusuario', Usuario)
@@ -50,7 +70,7 @@ function AgregarUsuario() {
     const permisosPorRol = {
         Administrador: ['Ver informes', 'Modificar configuración', 'Acceso total'],
         Cliente: ['Ver perfil', 'Realizar pedidos'],
-        Domiciliario: ['Entregar pedidos', 'Ver rutas de entrega'],
+        Domiciliario: ['Entregar pedidos', 'Ver rutas de entrega','registrar usuario'],
     };
 
     return (
@@ -163,7 +183,7 @@ function AgregarUsuario() {
                         />
                     </div>
                     <button onClick={agregarUsuario} className='btn btn-success'>
-                        Guardar Rol
+                        Guardar Usuario
                     </button>
                     <ToastContainer position='bottom-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
                 </div>
@@ -173,3 +193,57 @@ function AgregarUsuario() {
 }
 
 export default AgregarUsuario;
+
+
+/*import React, { useState } from 'react';
+
+const TuComponente = () => {
+    const [mostrarDesglose, setMostrarDesglose] = useState(false);
+
+    // ... (resto de tu código)
+
+    return (
+        <div className='container'>
+            <div className='row'>
+                <h2 className='mt-4'>Crear Un nuevo usuario</h2>
+            </div>
+
+            <div className='row'>
+                <div className='col-sm-6 offset-3'>
+                    {/* Agregar botón de desglose }
+                    <button
+                        className='btn btn-primary mb-3'
+                        onClick={() => setMostrarDesglose(!mostrarDesglose)}
+                    >
+                        {mostrarDesglose ? 'Ocultar Detalles' : 'Mostrar Detalles'}
+                    </button>
+
+                    {/* Sección desplegable }
+                    {mostrarDesglose && (
+                        <>
+                            {/* Resto de tu código aquí }
+                            {/* ... }
+                            <button onClick={agregarUsuario} className='btn btn-success'>
+                                Guardar Usuario
+                            </button>
+                            <ToastContainer
+                                position='bottom-right'
+                                autoClose={5000}
+                                hideProgressBar={false}
+                                newestOnTop={false}
+                                closeOnClick={false}
+                                rtl={false}
+                                pauseOnFocusLoss
+                                draggable
+                                pauseOnHover
+                            />
+                        </>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default TuComponente;
+ */

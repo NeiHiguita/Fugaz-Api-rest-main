@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import jsPDF from 'jspdf';
-import * as XLSX from 'xlsx';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
@@ -100,35 +99,6 @@ function CompraIndividual({ compra }) {
     });
 
     pdf.save('compra.pdf');
-  }
-  function descargarXls(){
-    const ws = XLSX.utils.table_to_sheet(document.querySelector('#pdf-container table'));
-    const wb = XLSX.utils.book_new(
-      XLSX.utils.aoa_to_sheet([
-        ['Detalles de la Compra'],
-        ['ID Compra', compra.idbuy],
-        ['Fecha de Compra', compra.buy_date],
-        ['Total de la Compra', compra.price_total],
-        ['Método de Pago', compra.payment_methods],
-        ['Cantidad', compra.quantity],
-        ['Subtotal', compra.subtotal],
-        ['Categoría', compra.name_category],
-        ['Nombre del Insumo', compra.name_input],
-        ['Stock', compra.stock],
-        ['Precio Unitario', compra.unit_price],
-        ['Estado del Insumo', compra.status_input],
-        ['Tipo', compra.type],
-        ['Nombre Completo', compra.full_name],
-        ['Documento', compra.document],
-        ['RUT', compra.rut],
-        ['Nombre del Representante Legal', compra.legal_representative_name],
-        ['Teléfono', compra.phone],
-        ['Dirección', compra.address],
-        ['Estado del Insumo en Proceso', compra.statuspro],
-      ])
-    );
-    XLSX.utils.book_append_sheet(wb, ws, 'SheetJS');
-    XLSX.writeFile(wb, 'compra.xlsx');
   }
     return (
         <Container className='cn'>
@@ -227,9 +197,6 @@ function CompraIndividual({ compra }) {
                         </TableCell>
                         <TableCell>
                           <Button className="btn btn-outline-danger" onClick={descargarArchivos}>Descargar PDF</Button>
-                        </TableCell>
-                        <TableCell>
-                          <Button className="btn btn-outline-success" onClick={descargarXls}>Descargar Excel</Button>
                         </TableCell>
                         <TableCell>
                           <Button

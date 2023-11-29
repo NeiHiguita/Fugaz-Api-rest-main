@@ -2,13 +2,19 @@
 
 .search {
     margin-top: -93px;
-    margin-left: 870px;
+    margin-left: 650px;
     position: relative;
   }
 .agr{
-  margin-top: -155px;
-  margin-left: 245px;
+  margin-top: -299px;
+  margin-left: 880px;
   position: relative;
+}
+.pdf{
+  position: absolute;
+  float:inline-end;
+  margin-top: -66px;
+  margin-left: 1180px;
 }
 .form-container {
     display: flex;
@@ -39,5 +45,5 @@
     border-color: #0056b3;
   }
 .cn{
-  margin-top: -100px;
+  margin-top: -140px;
 }

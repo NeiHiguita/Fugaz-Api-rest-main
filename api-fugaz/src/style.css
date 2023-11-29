@@ -1,0 +1,43 @@
+/* ListaUsuarios.css */
+
+.search {
+    margin-top: -93px;
+    margin-left: 870px;
+    position: relative;
+  }
+.agr{
+  margin-top: -155px;
+  margin-left: 245px;
+  position: relative;
+}
+.form-container {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .input-busqueda {
+    width: 300px;
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .button-buscar {
+    padding: 6px 15px;
+    font-size: 16px;
+    background-color: #007bff; /* Puedes cambiar el color según tus preferencias */
+    color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button-buscar:hover {
+    background-color: #0056b3; /* Cambia el color al pasar el ratón sobre el botón */
+    border-color: #0056b3;
+  }
+.cn{
+  margin-top: -100px;
+}

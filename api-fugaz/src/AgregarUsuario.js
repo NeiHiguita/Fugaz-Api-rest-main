@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import uniquid from 'uniquid';
-//import App from './App';
 import { Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
-import Sweet from 'sweetalert2';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 
 /*
     tareas:
-    -alertas sweetalert2
     -validaciones de buscador para los booleanos
     -pdf para todos los registros con footer y cambiar de lado la fecha 
-    -desglosamiento
 */
 
 function AgregarUsuario() {
@@ -27,6 +23,25 @@ function AgregarUsuario() {
     const [password, setPassword] = useState('');
     const [state_user, setStateuser] = useState(false);
     const [date_register, setDater] = useState('');
+    const validateName = (name) => {
+        const regex = /^[a-zA-Z]+$/;
+        return regex.test(name);
+      };
+    const validatePassword = (password) => {
+        return password.length <= 12;
+      };
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        let day = today.getDate();
+    
+        // Agregar un 0 al mes y al día si son menores que 10
+        month = month < 10 ? '0' + month : month;
+        day = day < 10 ? '0' + day : day;
+    
+        return `${year}-${month}-${day}`;
+      };
 
     function agregarUsuario() {
         if (
@@ -37,7 +52,11 @@ function AgregarUsuario() {
             password.trim() === '' ||
             date_register.trim() === ''
         ) {
-            toast.error('Por favor, completa todos los campos.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Por favor, ingrese todos los campos',
+              });
             return;
         }    
         const Usuario = {
@@ -57,13 +76,25 @@ function AgregarUsuario() {
             .post('/api/usuario/Agregarusuario', Usuario)
             .then((res) => {
                 if (res.data && res.data.message) {
-                    toast.error(res.data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.data.message || 'Error desconocido al procesar la solicitud',
+                      });
                 } else {
-                    toast.success('Usuario agregado correctamente');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: 'Usuario agregado correctamente',
+                      });
                 }
             })
             .catch(() => {
-                toast.error('Error al procesar la solicitud');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al procesar la solicitud',
+                  });
             });
     }
 
@@ -97,7 +128,7 @@ function AgregarUsuario() {
                         </select>
                     </div>
                     <Form.Group className='mb-3'>
-                        <Form.Label>Estado del rol:</Form.Label>
+                        <Form.Label>Estado del Rol:</Form.Label>
                         <Form.Check
                             type='switch'
                             id='custom-switch'
@@ -122,18 +153,24 @@ function AgregarUsuario() {
                         </Form.Control>
                     </Form.Group>
                     <div className='mb-3'>
-                        <label htmlFor='name_user' className='form-label'>
-                            Nombre del Usuario
-                        </label>
-                        <input
-                            type='text'
-                            className='form-control'
-                            value={name_user}
-                            onChange={(e) => {
-                                setNameuser(e.target.value);
-                            }}
-                        />
-                    </div>
+  <label htmlFor='name_user' className='form-label'>
+    Nombre del Usuario
+  </label>
+  <input
+    type='text'
+    className='form-control'
+    value={name_user}
+    onChange={(e) => {
+      const inputName = e.target.value;
+      if (validateName(inputName) || inputName === "") {
+        setNameuser(inputName);
+      }
+    }}
+  />
+  {!validateName(name_user) && name_user !== "" && (
+    <small className='text-danger'>Solo se permiten letras.</small>
+  )}
+</div>
                     <div className='mb-3'>
                         <label htmlFor='email' className='form-label'>
                             Correo
@@ -148,18 +185,24 @@ function AgregarUsuario() {
                         />
                     </div>
                     <div className='mb-3'>
-                        <label htmlFor='password' className='form-label'>
-                            Contraseña
-                        </label>
-                        <input
-                            type='password'
-                            className='form-control'
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                            }}
-                        />
-                    </div>
+  <label htmlFor='password' className='form-label'>
+    Contraseña
+  </label>
+  <input
+    type='password'
+    className='form-control'
+    value={password}
+    onChange={(e) => {
+      const inputPassword = e.target.value;
+      if (validatePassword(inputPassword) || inputPassword === "") {
+        setPassword(inputPassword);
+      }
+    }}
+  />
+  {!validatePassword(password) && password !== "" && (
+    <small className='text-danger'>La contraseña debe tener como máximo 12 dígitos.</small>
+  )}
+</div>
                     <Form.Group className='mb-3'>
                         <Form.Label>Estado del Usuario:</Form.Label>
                         <Form.Check
@@ -170,22 +213,32 @@ function AgregarUsuario() {
                         />
                     </Form.Group>
                     <div className='mb-3'>
-                        <label htmlFor='date_register' className='form-label'>
-                            Fecha de registro
-                        </label>
-                        <input
-                            type='date'
-                            className='form-control'
-                            value={date_register}
-                            onChange={(e) => {
-                                setDater(e.target.value);
-                            }}
-                        />
-                    </div>
+        <label htmlFor='date_register' className='form-label'>
+          Fecha de registro
+        </label>
+        <input
+          type='date'
+          className='form-control'
+          value={date_register}
+          max={getCurrentDate()} // Establecer la fecha máxima permitida
+          onChange={(e) => {
+            const selectedDate = e.target.value;
+            if (selectedDate === getCurrentDate()) {
+              setDater(selectedDate);
+            } else {
+              // Mostrar algún tipo de mensaje de error, SweetAlert2 por ejemplo
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Solo se permite la fecha actual.',
+              });
+            }
+          }}
+        />
+      </div>
                     <button onClick={agregarUsuario} className='btn btn-success'>
                         Guardar Usuario
                     </button>
-                    <ToastContainer position='bottom-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
                 </div>
             </div>
         </div>
@@ -194,56 +247,3 @@ function AgregarUsuario() {
 
 export default AgregarUsuario;
 
-
-/*import React, { useState } from 'react';
-
-const TuComponente = () => {
-    const [mostrarDesglose, setMostrarDesglose] = useState(false);
-
-    // ... (resto de tu código)
-
-    return (
-        <div className='container'>
-            <div className='row'>
-                <h2 className='mt-4'>Crear Un nuevo usuario</h2>
-            </div>
-
-            <div className='row'>
-                <div className='col-sm-6 offset-3'>
-                    {/* Agregar botón de desglose }
-                    <button
-                        className='btn btn-primary mb-3'
-                        onClick={() => setMostrarDesglose(!mostrarDesglose)}
-                    >
-                        {mostrarDesglose ? 'Ocultar Detalles' : 'Mostrar Detalles'}
-                    </button>
-
-                    {/* Sección desplegable }
-                    {mostrarDesglose && (
-                        <>
-                            {/* Resto de tu código aquí }
-                            {/* ... }
-                            <button onClick={agregarUsuario} className='btn btn-success'>
-                                Guardar Usuario
-                            </button>
-                            <ToastContainer
-                                position='bottom-right'
-                                autoClose={5000}
-                                hideProgressBar={false}
-                                newestOnTop={false}
-                                closeOnClick={false}
-                                rtl={false}
-                                pauseOnFocusLoss
-                                draggable
-                                pauseOnHover
-                            />
-                        </>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default TuComponente;
- */

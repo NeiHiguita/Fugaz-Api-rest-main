@@ -4,9 +4,8 @@ import BarraBusqueda from './BarraBusqueda';
 import axios from 'axios';
 import styled from 'styled-components';
 import './style.css';
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-import usuarioIndividual from './UsuarioIndividual';
+//importar pdf
+import pdf from './pdf';
 //import { useState } from "react";
 
 
@@ -32,66 +31,7 @@ const Button = styled.button`
 
 function ListaUsuarios() {
 
-  const [usuario, setUsuario] = useState([]);
 
-  const generatePDFReport = () => {
-    const dateGenerateReport = new Date().toDateString();
-
-    const doc = new jsPDF({ orientation: "landscape" }); // Cambiado a "landscape"
-
-    // Definimos las columnas de la tabla del documento
-    const columns = [
-      "ID",
-      "Nombre de Usuario",
-      "Rol",
-      "Permiso",
-      "Email",
-      "Estado",
-      "Fecha de Registro",
-    ];
-
-    // Definimos los valores de las columnas del documento
-    const data = [
-      [
-        usuario.iduser,
-        usuario.name_user,
-        usuario.name_rol,
-        usuario.name_permission,
-        usuario.email,
-        usuario.state_user,
-        usuario.date_register,
-      ],
-    ];
-
-    // Calculamos el espacio de cada columna
-    const columnWidth = 35;
-
-    const columnStyles = {};
-    for (let i = 0; i < columns.length; i++) {
-      columnStyles[i] = { cellWidth: columnWidth };
-    }
-
-    doc.autoTable({
-      head: [columns],
-      body: data,
-      theme: "striped",
-      startY: 20,
-      columnStyles: columnStyles,
-      didDrawPage: (data) => {
-        // Encabezado
-        doc.setFontSize(10);
-        doc.text(
-          ` Fugaz Retro  - Fecha:${dateGenerateReport}`,
-          data.settings.margin.left,
-          10
-        );
-        // Pie de página
-        doc.setFontSize(12);
-      },
-    });
-
-    doc.save("Fugaz report.pdf");
-  };
 //buscador
 
   const [datausuarios, setdatausuario] = useState([]);
@@ -99,7 +39,9 @@ function ListaUsuarios() {
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
-    axios.get('/api/usuario/obtenerusuarios').then((res) => {
+    axios
+    .get('/api/usuario/obtenerusuarios')
+    .then((res) => {
       console.log(res);
       setdatausuario(res.data);
     }).catch((err) => {
@@ -116,10 +58,13 @@ function ListaUsuarios() {
     const nombreRol = usuario.name_rol.toLowerCase();
     const nombreUsuario = usuario.name_user.toLowerCase();
     const fechaRegistro = usuario.date_register.toLowerCase();
+    //const estadorol = usuario.state_rol.toLowerCase();
+    //const estadousuario = usuario.state_user.toLowerCase();
     return (
       nombreRol.includes(searchTerm) ||
       nombreUsuario.includes(searchTerm) ||
-      fechaRegistro.includes(searchTerm)
+      fechaRegistro.includes(searchTerm) 
+    
     );
   });
 
@@ -132,18 +77,17 @@ function ListaUsuarios() {
 
   return (
     <div>
-      
       <h2>Lista de Usuarios</h2>
       <div className="search">
         <BarraBusqueda onBuscar={handleBusqueda} />
       </div>
       <div className='pdf'>
-        <TableCell>
-          <Button
-            className="btn btn-outline-danger"
-            onClick={generatePDFReport}>Descargar PDF
-          </Button>
-        </TableCell>
+      <Button
+      className="agr btn btn-outline-danger"
+      onClick={() => { pdf(datausuarios); }}
+      >
+      Generar PDF
+      </Button>
       </div>
       <br />
       <br />

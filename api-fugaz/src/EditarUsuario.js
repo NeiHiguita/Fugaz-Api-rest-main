@@ -2,9 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState }  from 'react'
 import { useParams } from 'react-router-dom'
 import { Form} from 'react-bootstrap';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Sweet from 'sweetalert2';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 
 function EditarUsuario() {
 
@@ -19,6 +18,25 @@ function EditarUsuario() {
         const [password, setPassword]=useState('')
         const [state_user, setStateuser]=useState('')
         const[date_register, setDater]=useState('')
+        const validateName = (name) => {
+            const regex = /^[a-zA-Z]+$/;
+            return regex.test(name);
+          };
+        const validatePassword = (password) => {
+            return password.length <= 12;
+          };
+        const getCurrentDate = () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let day = today.getDate();
+        
+            // Agregar un 0 al mes y al día si son menores que 10
+            month = month < 10 ? '0' + month : month;
+            day = day < 10 ? '0' + day : day;
+        
+            return `${year}-${month}-${day}`;
+          };
 
     useEffect(() => {
         axios.post('/api/usuario/obtenerdatausuario', {iduser: params.iduser})
@@ -36,11 +54,19 @@ function EditarUsuario() {
             setDater(datausuario.date_register)
 
         } else {
-            console.error("No se pudo obtener la información del usuario.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al procesar la solicitud',
+              });
         }
     })
     .catch(error => {
-        console.error("Error al obtener la información del usuario:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error || 'Error al procesar la solicitud',
+          });
         })
     }, [])
 
@@ -65,14 +91,26 @@ function EditarUsuario() {
         .then(res => {
             console.log(res.data)
             if (res.data && res.data.message) {
-            alert(res.data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res.data.message || 'Error desconocido al procesar la solicitud',
+                  });
             } else {
             console.log(res); // Imprime la respuesta completa para ver su estructura
-            toast.success('Usuario actualizado');
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: 'Usuario actualizado correctamente',
+              });
             }
         })
         .catch(() => {
-            toast.success('Error al procesar la solicitud');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al procesar la solicitud',
+              });
         });
     }
 
@@ -107,7 +145,7 @@ function EditarUsuario() {
                         </select>
                     </div>
                     <Form.Group className='mb-3'>
-                        <Form.Label>Estado del rol:</Form.Label>
+                        <Form.Label>Estado del Rol:</Form.Label>
                         <Form.Check
                             type='switch'
                             id='custom-switch'
@@ -132,18 +170,24 @@ function EditarUsuario() {
                         </Form.Control>
                     </Form.Group>
                     <div className='mb-3'>
-                        <label htmlFor='name_user' className='form-label'>
-                            Nombre del Usuario
-                        </label>
-                        <input
-                            type='text'
-                            className='form-control'
-                            value={name_user}
-                            onChange={(e) => {
-                                setNameuser(e.target.value);
-                            }}
-                        />
-                    </div>
+  <label htmlFor='name_user' className='form-label'>
+    Nombre del Usuario
+  </label>
+  <input
+    type='text'
+    className='form-control'
+    value={name_user}
+    onChange={(e) => {
+      const inputName = e.target.value;
+      if (validateName(inputName) || inputName === "") {
+        setNameuser(inputName);
+      }
+    }}
+  />
+  {!validateName(name_user) && name_user !== "" && (
+    <small className='text-danger'>Solo se permiten letras.</small>
+  )}
+</div>
                     <div className='mb-3'>
                         <label htmlFor='email' className='form-label'>
                             Correo
@@ -158,18 +202,24 @@ function EditarUsuario() {
                         />
                     </div>
                     <div className='mb-3'>
-                        <label htmlFor='password' className='form-label'>
-                            Contraseña
-                        </label>
-                        <input
-                            type='password'
-                            className='form-control'
-                            value={password}
-                            onChange={(e) => {
-                                setPassword(e.target.value);
-                            }}
-                        />
-                    </div>
+  <label htmlFor='password' className='form-label'>
+    Contraseña
+  </label>
+  <input
+    type='password'
+    className='form-control'
+    value={password}
+    onChange={(e) => {
+      const inputPassword = e.target.value;
+      if (validatePassword(inputPassword) || inputPassword === "") {
+        setPassword(inputPassword);
+      }
+    }}
+  />
+  {!validatePassword(password) && password !== "" && (
+    <small className='text-danger'>La contraseña debe tener como máximo 12 dígitos.</small>
+  )}
+</div>
                     <Form.Group className='mb-3'>
                         <Form.Label>Estado del Usuario:</Form.Label>
                         <Form.Check
@@ -180,20 +230,30 @@ function EditarUsuario() {
                         />
                     </Form.Group>
                     <div className='mb-3'>
-                        <label htmlFor='date_register' className='form-label'>
-                            Fecha de registro
-                        </label>
-                        <input
-                            type='date'
-                            className='form-control'
-                            value={date_register}
-                            onChange={(e) => {
-                                setDater(e.target.value);
-                            }}
-                        />
-                    </div>
+        <label htmlFor='date_register' className='form-label'>
+          Fecha de registro
+        </label>
+        <input
+          type='date'
+          className='form-control'
+          value={date_register}
+          max={getCurrentDate()} // Establecer la fecha máxima permitida
+          onChange={(e) => {
+            const selectedDate = e.target.value;
+            if (selectedDate === getCurrentDate()) {
+              setDater(selectedDate);
+            } else {
+              // Mostrar algún tipo de mensaje de error, SweetAlert2 por ejemplo
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Solo se permite la fecha actual.',
+              });
+            }
+          }}
+        />
+      </div>
                 <button onClick={editarUsuario} className="btn btn-success">Actualizar Usuario</button>
-                <ToastContainer position='bottom-right' autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             </div>
         </div>
     </div>

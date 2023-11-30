@@ -13,8 +13,8 @@
 .pdf{
   position: absolute;
   float:inline-end;
-  margin-top: -66px;
-  margin-left: 1180px;
+  margin-top: 96px;
+  margin-left: 310px;
 }
 .form-container {
     display: flex;

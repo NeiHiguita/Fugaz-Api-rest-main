@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import Sweet from 'sweetalert2';
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 // Reports JPDF
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -10,26 +10,17 @@ import "jspdf-autotable";
 import { useState } from "react";
 
 import styled from "styled-components";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "./style.css";
 
 //Hooks
 
 const Container = styled.div`
-  margin-top: 3.5rem;
+  margin-top: 5.8rem;
 `;
 
 const StyledCard = styled.div`
   width: 100%;
   margin: 0 auto;
-`;
-
-const CardHeader = styled.div`
-  background-color: #007bff;
-  color: #fff;
-  padding: 1px;
-  text-align: center;
 `;
 
 const CardBody = styled.div`
@@ -61,13 +52,6 @@ const TableCell = styled.td`
   width: 40%;
 `;
 
-const CardFooter = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-`;
-
 const Button = styled.button`
   &.btn-success {
     background-color: #28a745;
@@ -87,6 +71,27 @@ const Button = styled.button`
 function UsuarioIndividual({ usuario }) {
   const navigate = useNavigate();
   const [mostrarDesglose, setMostrarDesglose] = useState(false);
+  const getstateror = (state_rol) => {
+    if (state_rol === true) {
+      return "Activo";
+    } else {
+      return "Inactivo";
+    }
+  };
+  const getstateuser = (state_user) => {
+    if (state_user === true) {
+      return "Activo";
+    } else {
+      return "Inactivo";
+    }
+  };
+  const passawordoculto = (password) => {
+    if (password) {
+      return "********";
+    } else {
+      return "********";
+    }
+  };
 
 
   function borrarUsuario(iduser) {
@@ -94,14 +99,21 @@ function UsuarioIndividual({ usuario }) {
       .post("/api/usuario/borrarusuario", { iduser })
       .then((res) => {
         console.log(res.data[0]);
-        toast.success(res.data);
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito',
+          text: res.data || 'Usuario eliminado correctamente',
+        });
         navigate(0);
       })
       .catch((err) => {
-        toast.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err || 'Error al procesar la solicitud',
+        });
       });
   }
-
   //const user = useState("");
 
   const generatePDFReport = () => {
@@ -119,7 +131,6 @@ function UsuarioIndividual({ usuario }) {
       "Estado",
       "Fecha de Registro",
     ];
-
     // Definimos los valores de las columnas del documento
     const data = [
       [
@@ -132,15 +143,12 @@ function UsuarioIndividual({ usuario }) {
         usuario.date_register,
       ],
     ];
-
     // Calculamos el espacio de cada columna
     const columnWidth = 35;
-
     const columnStyles = {};
     for (let i = 0; i < columns.length; i++) {
       columnStyles[i] = { cellWidth: columnWidth };
     }
-
     doc.autoTable({
       head: [columns],
       body: data,
@@ -171,10 +179,101 @@ function UsuarioIndividual({ usuario }) {
         );
       },
     });
-
     doc.save("Fugaz report.pdf");
   };
-
+  
+  return (
+    <Container>
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          <StyledCard>
+            <div className="cn">
+              <CardBody>
+                <Table className="table table-bordered">
+                  <tbody>
+                    <TableRow>
+                      <TableHeader>ID</TableHeader>
+                      <TableCell>{usuario.iduser}</TableCell>
+                      <TableCell colSpan="2">
+                        <Button
+                          className="btn btn-info"
+                          onClick={() => {
+                            setMostrarDesglose(!mostrarDesglose);
+                          }}>
+                          Ver
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          to={`/editarusuario/${usuario.iduser}`}
+                          className="btn btn-success">
+                          Editar
+                        </Link>
+                      </TableCell>
+                      <TableCell className="d-none">
+                        <Button
+                          className="btn btn-outline-danger"
+                          onClick={generatePDFReport}>
+                          Descargar PDF
+                        </Button>
+                      </TableCell>
+                      <TableCell className="">
+                        <Button
+                          className="btn btn-danger"
+                          onClick={() => {
+                            borrarUsuario(usuario.iduser);
+                          }}>
+                          Eliminar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                    {mostrarDesglose && (
+                        <>
+                    <TableRow>
+                      <TableHeader>Rol</TableHeader>
+                      <TableCell>{usuario.name_rol}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Estado del Rol</TableHeader>
+                      <TableCell>{getstateror(usuario.state_rol)}</TableCell>
+                      </TableRow>
+                    <TableRow>
+                      <TableHeader>Permiso</TableHeader>
+                      <TableCell>{usuario.name_permission}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Nombre de Usuario</TableHeader>
+                      <TableCell>{usuario.name_user}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Email</TableHeader>
+                      <TableCell>{usuario.email}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Contraseña</TableHeader>
+                      <TableCell>{passawordoculto(usuario.passaword)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Estado del Usuario</TableHeader>
+                      <TableCell>{getstateuser(usuario.state_user)}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableHeader>Fecha de Registro</TableHeader>
+                      <TableCell>{usuario.date_register}</TableCell>
+                    </TableRow>
+                    </>
+                    )}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </div>
+          </StyledCard>
+        </div>
+      </div>
+    </Container>
+  );
+}
+export default UsuarioIndividual;
   /*const descargarArchivos = () => {
     const pdf = new jsPDF();
     pdf.text(20, 20, "Detalles del Usuario");
@@ -222,114 +321,3 @@ function UsuarioIndividual({ usuario }) {
 
     pdf.save("usuario.pdf");
   };*/
-
-  return (
-    <Container>
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <StyledCard>
-            <div className="cn">
-
-              <CardBody>
-              
-                   
-                <Table className="table table-bordered">
-                  <tbody>
-                    <TableRow>
-                      
-                      <TableHeader>ID</TableHeader>
-                      <TableCell>{usuario.iduser}</TableCell>
-                      <TableCell colSpan="2">
-                        <Button
-                          className="btn btn-info"
-                          onClick={() => {
-                            setMostrarDesglose(!mostrarDesglose);
-                          }}>
-                          Ver
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <Link
-                          to={`/editarusuario/${usuario.iduser}`}
-                          className="btn btn-success">
-                          Editar
-                        </Link>
-                      </TableCell>
-                      <TableCell className="d-none">
-                        <Button
-                          className="btn btn-outline-danger"
-                          onClick={generatePDFReport}>
-                          Descargar PDF
-                        </Button>
-                      </TableCell>
-                      <TableCell className="">
-                        <Button
-                          className="btn btn-danger"
-                          onClick={() => {
-                            borrarUsuario(usuario.iduser);
-                          }}>
-                          Eliminar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                    {mostrarDesglose && (
-                        <>
-                    <TableRow>
-                      <TableHeader>Rol</TableHeader>
-                      <TableCell>{usuario.name_rol}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Estado del Rol</TableHeader>
-                      <TableCell>{usuario.state_rol}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Permiso</TableHeader>
-                      <TableCell>{usuario.name_permission}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Nombre de Usuario</TableHeader>
-                      <TableCell>{usuario.name_user}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Email</TableHeader>
-                      <TableCell>{usuario.email}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Contraseña</TableHeader>
-                      <TableCell>{usuario.passaword}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Estado del Usuario</TableHeader>
-                      <TableCell>{usuario.state_user}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Fecha de Registro</TableHeader>
-                      <TableCell>{usuario.date_register}</TableCell>
-                    </TableRow>
-                    </>
-                    )}
-                  </tbody>
-                </Table>
-              </CardBody>
-              <CardFooter>
-                <ToastContainer
-                  position="bottom-right"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                />
-              </CardFooter>
-            </div>
-          </StyledCard>
-        </div>
-      </div>
-    </Container>
-  );
-}
-
-export default UsuarioIndividual;

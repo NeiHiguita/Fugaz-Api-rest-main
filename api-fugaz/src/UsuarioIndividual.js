@@ -181,7 +181,7 @@ function UsuarioIndividual({ usuario }) {
     });
     doc.save("Fugaz report.pdf");
   };
-  
+
   return (
     <Container>
       <div className="row justify-content-center">
@@ -228,40 +228,40 @@ function UsuarioIndividual({ usuario }) {
                       </TableCell>
                     </TableRow>
                     {mostrarDesglose && (
-                        <>
-                    <TableRow>
-                      <TableHeader>Rol</TableHeader>
-                      <TableCell>{usuario.name_rol}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Estado del Rol</TableHeader>
-                      <TableCell>{getstateror(usuario.state_rol)}</TableCell>
-                      </TableRow>
-                    <TableRow>
-                      <TableHeader>Permiso</TableHeader>
-                      <TableCell>{usuario.name_permission}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Nombre de Usuario</TableHeader>
-                      <TableCell>{usuario.name_user}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Email</TableHeader>
-                      <TableCell>{usuario.email}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Contraseña</TableHeader>
-                      <TableCell>{passawordoculto(usuario.passaword)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Estado del Usuario</TableHeader>
-                      <TableCell>{getstateuser(usuario.state_user)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableHeader>Fecha de Registro</TableHeader>
-                      <TableCell>{usuario.date_register}</TableCell>
-                    </TableRow>
-                    </>
+                      <>
+                        <TableRow>
+                          <TableHeader>Rol</TableHeader>
+                          <TableCell>{usuario.name_rol}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Estado del Rol</TableHeader>
+                          <TableCell>{getstateror(usuario.state_rol)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Permiso</TableHeader>
+                          <TableCell>{usuario.name_permission}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Nombre de Usuario</TableHeader>
+                          <TableCell>{usuario.name_user}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Email</TableHeader>
+                          <TableCell>{usuario.email}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Contraseña</TableHeader>
+                          <TableCell>{passawordoculto(usuario.passaword)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Estado del Usuario</TableHeader>
+                          <TableCell>{getstateuser(usuario.state_user)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableHeader>Fecha de Registro</TableHeader>
+                          <TableCell>{usuario.date_register}</TableCell>
+                        </TableRow>
+                      </>
                     )}
                   </tbody>
                 </Table>
@@ -274,50 +274,50 @@ function UsuarioIndividual({ usuario }) {
   );
 }
 export default UsuarioIndividual;
-  /*const descargarArchivos = () => {
-    const pdf = new jsPDF();
-    pdf.text(20, 20, "Detalles del Usuario");
+/*const descargarArchivos = () => {
+  const pdf = new jsPDF();
+  pdf.text(20, 20, "Detalles del Usuario");
 
-    pdf.autoPrint({
-      head: [
-        [
-          "ID",
-          "Rol",
-          "Estado del Rol",
-          "Permiso",
-          "Nombre de Usuario",
-          "Email",
-          "Contraseña",
-          "Estado del Usuario",
-          "Fecha de Registro",
-        ],
+  pdf.autoPrint({
+    head: [
+      [
+        "ID",
+        "Rol",
+        "Estado del Rol",
+        "Permiso",
+        "Nombre de Usuario",
+        "Email",
+        "Contraseña",
+        "Estado del Usuario",
+        "Fecha de Registro",
       ],
-      body: [
-        [
-          "ID",
-          "Rol",
-          "Estado del Rol",
-          "Permiso",
-          "Nombre de Usuario",
-          "Email",
-          "Contraseña",
-          "Estado del Usuario",
-          "Fecha de Registro",
-        ],
+    ],
+    body: [
+      [
+        "ID",
+        "Rol",
+        "Estado del Rol",
+        "Permiso",
+        "Nombre de Usuario",
+        "Email",
+        "Contraseña",
+        "Estado del Usuario",
+        "Fecha de Registro",
       ],
-      theme: "striped",
-      styles: { halign: "center" },
-      headStyles: { fillColor: [71, 160, 71] },
-      didParseCell: (data) => {
-        if (data.section === "head") {
-          data.cell.styles.fillColor = [71, 160, 71];
-          data.cell.styles.textColor = [255, 255, 255];
-        }
-      },
-      didDrawCell: (data) => {
-        console.log(data.column.index);
-      },
-    });
+    ],
+    theme: "striped",
+    styles: { halign: "center" },
+    headStyles: { fillColor: [71, 160, 71] },
+    didParseCell: (data) => {
+      if (data.section === "head") {
+        data.cell.styles.fillColor = [71, 160, 71];
+        data.cell.styles.textColor = [255, 255, 255];
+      }
+    },
+    didDrawCell: (data) => {
+      console.log(data.column.index);
+    },
+  });
 
-    pdf.save("usuario.pdf");
-  };*/
+  pdf.save("usuario.pdf");
+};*/

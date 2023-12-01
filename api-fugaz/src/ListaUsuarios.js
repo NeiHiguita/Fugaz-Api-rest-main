@@ -8,11 +8,6 @@ import './style.css';
 import pdf from './pdf';
 //import { useState } from "react";
 
-
-const TableCell = styled.td`
-  padding: 0.5rem;
-`;
-
 const Button = styled.button`
   &.btn-success {
     background-color: #28a745;
@@ -30,9 +25,7 @@ const Button = styled.button`
 `;
 
 function ListaUsuarios() {
-
-
-//buscador
+  //buscador
 
   const [datausuarios, setdatausuario] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,13 +33,13 @@ function ListaUsuarios() {
 
   useEffect(() => {
     axios
-    .get('/api/usuario/obtenerusuarios')
-    .then((res) => {
-      console.log(res);
-      setdatausuario(res.data);
-    }).catch((err) => {
-      console.log(err);
-    });
+      .get('/api/usuario/obtenerusuarios')
+      .then((res) => {
+        console.log(res);
+        setdatausuario(res.data);
+      }).catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const handleBusqueda = (busqueda) => {
@@ -63,8 +56,8 @@ function ListaUsuarios() {
     return (
       nombreRol.includes(searchTerm) ||
       nombreUsuario.includes(searchTerm) ||
-      fechaRegistro.includes(searchTerm) 
-    
+      fechaRegistro.includes(searchTerm)
+
     );
   });
 
@@ -82,12 +75,12 @@ function ListaUsuarios() {
         <BarraBusqueda onBuscar={handleBusqueda} />
       </div>
       <div className='pdf'>
-      <Button
-      className="agr btn btn-outline-danger"
-      onClick={() => { pdf(datausuarios); }}
-      >
-      Generar PDF
-      </Button>
+        <Button
+          className="agr btn btn-outline-danger"
+          onClick={() => { pdf(datausuarios); }}
+        >
+          Generar PDF
+        </Button>
       </div>
       <br />
       <br />

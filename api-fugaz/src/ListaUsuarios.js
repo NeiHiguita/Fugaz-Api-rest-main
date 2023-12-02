@@ -4,9 +4,7 @@ import BarraBusqueda from './BarraBusqueda';
 import axios from 'axios';
 import styled from 'styled-components';
 import './style.css';
-//importar pdf
-import pdf from './pdf';
-//import { useState } from "react";
+import pdf from './pdf';  // Ajusta la importación según la ruta correcta
 
 const Button = styled.button`
   &.btn-success {
@@ -25,11 +23,10 @@ const Button = styled.button`
 `;
 
 function ListaUsuarios() {
-  //buscador
-
   const [datausuarios, setdatausuario] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [pdfContent, setPdfContent] = useState(null);  // Nuevo estado para almacenar el contenido del PDF
 
   useEffect(() => {
     axios
@@ -42,6 +39,13 @@ function ListaUsuarios() {
       });
   }, []);
 
+  useEffect(() => {
+    if (pdfContent) {
+      // Puedes hacer algo con el contenido del PDF aquí si es necesario
+      console.log('Contenido del PDF:', pdfContent);
+    }
+  }, [pdfContent]);
+
   const handleBusqueda = (busqueda) => {
     setSearchTerm(busqueda.toLowerCase());
     setIsSearching(true);
@@ -51,22 +55,29 @@ function ListaUsuarios() {
     const nombreRol = usuario.name_rol.toLowerCase();
     const nombreUsuario = usuario.name_user.toLowerCase();
     const fechaRegistro = usuario.date_register.toLowerCase();
-    //const estadorol = usuario.state_rol.toLowerCase();
-    //const estadousuario = usuario.state_user.toLowerCase();
+    const estadousuario = usuario.state_user ? 'activo' : 'inactivo';
     return (
       nombreRol.includes(searchTerm) ||
       nombreUsuario.includes(searchTerm) ||
-      fechaRegistro.includes(searchTerm)
-
+      fechaRegistro.includes(searchTerm) ||
+      estadousuario.includes(searchTerm.toLowerCase())
     );
   });
 
-  //mapeo de la lista
   const listausuarios = (isSearching ? filteredUsuarios : datausuarios).map((usuario) => (
     <div key={usuario.iduser}>
       <UsuarioIndividual usuario={usuario} />
     </div>
   ));
+
+  const handleGenerarPDF = async () => {
+    try {
+      const content = await pdf(datausuarios);
+      setPdfContent(content);
+    } catch (error) {
+      console.error('Error al generar el PDF:', error);
+    }
+  };
 
   return (
     <div>
@@ -77,7 +88,7 @@ function ListaUsuarios() {
       <div className='pdf'>
         <Button
           className="agr btn btn-outline-danger"
-          onClick={() => { pdf(datausuarios); }}
+          onClick={handleGenerarPDF}
         >
           Generar PDF
         </Button>

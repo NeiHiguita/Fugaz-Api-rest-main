@@ -19,7 +19,7 @@ function EditarUsuario() {
   const [state_user, setStateuser] = useState('')
   const [date_register, setDater] = useState('')
   const validateName = (name) => {
-    const regex = /^[a-zA-Z]+$/;
+    const regex = /^[a-zA-Z\s]+$/;
     return regex.test(name);
   };
   const validatePassword = (password) => {

@@ -5,16 +5,13 @@ function BarraBusqueda({ onBuscar }) {
   const [busqueda, setBusqueda] = useState('');
 
   const handleChange = (e) => {
-    setBusqueda(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onBuscar(busqueda);
+    const nuevaBusqueda = e.target.value;
+    setBusqueda(nuevaBusqueda);
+    onBuscar(nuevaBusqueda); // Llamar a la función onBuscar con la nueva búsqueda
   };
 
   return (
-    <form className="form-container" onSubmit={handleSubmit}>
+    <form className="form-container">
       <input
         className="input-busqueda"
         type="text"
@@ -22,9 +19,7 @@ function BarraBusqueda({ onBuscar }) {
         onChange={handleChange}
         placeholder="Buscar..."
       />
-      <button className="btn btn-outline-info" type="submit">
-        Buscar
-      </button>
+
     </form>
   );
 }

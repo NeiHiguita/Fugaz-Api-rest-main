@@ -7,19 +7,7 @@ import './style.css';
 import pdf from './pdf';  // Ajusta la importación según la ruta correcta
 
 const Button = styled.button`
-  &.btn-success {
-    background-color: #28a745;
-    color: #fff;
-  }
 
-  &.btn-danger {
-    background-color: #dc3545;
-    color: #fff;
-  }
-
-  &.d-none {
-    display: none;
-  }
 `;
 
 function ListaUsuarios() {
@@ -80,6 +68,7 @@ function ListaUsuarios() {
   };
 
   return (
+    <center>
     <div>
       <h2>Lista de Usuarios</h2>
       <div className="search">
@@ -87,26 +76,24 @@ function ListaUsuarios() {
       </div>
       <div className='pdf'>
         <Button
-          className="agr btn btn-outline-danger"
+          className=""
           onClick={handleGenerarPDF}
         >
           Generar PDF
         </Button>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
       <button
-        className="agr btn btn-outline-light"
+        className=""
         onClick={() => { window.location = 'agregarusuario'; }}
       >
         Agregar Usuario
       </button>
+      <hr></hr>
       <div className="usuarios-lista">
         {listausuarios.length ? listausuarios : <p>No se encontraron resultados</p>}
       </div>
     </div>
+    </center>
   );
 }
 

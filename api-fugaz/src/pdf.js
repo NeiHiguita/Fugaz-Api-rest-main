@@ -15,6 +15,15 @@ const generarReportePDF = async () => {
 
     const dateGenerateReport = new Date().toDateString();
     const doc = new jsPDF({ orientation: "landscape" });
+    const tit = [
+      "Reporte de Usuarios",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ]
 
     const columns = [
       "ID",
@@ -43,22 +52,23 @@ const generarReportePDF = async () => {
     }
 
     doc.autoTable({
-      head: [columns],
+      head: [tit, columns],
       body: data,
       theme: "striped",
       startY: 20,
       columnStyles: columnStyles,
       didDrawPage: (data) => {
+        
         doc.setFontSize(10);
         const pageWidth = doc.internal.pageSize.width;
-        const headerText = ` Fugaz Retro  - Fecha:${dateGenerateReport}`;
+        const headerText = `Reporte de usuarios                                                                                                                                                                           Fugaz Retro  - Fecha:${dateGenerateReport}`;
         const headerTextWidth =
           (doc.getStringUnitWidth(headerText) *
             doc.internal.getFontSize()) /
           doc.internal.scaleFactor;
-        const headerXPosition = pageWidth - headerTextWidth - 10;
+        //const headerXPosition = pageWidth - headerTextWidth - 10;
 
-        doc.text(headerText, headerXPosition, 10);
+        doc.text(headerText, 15, 10);
 
         doc.setFontSize(12);
         doc.text(

@@ -15,57 +15,27 @@ import "./style.css";
 //Hooks
 
 const Container = styled.div`
-  margin-top: 5.8rem;
 `;
 
 const StyledCard = styled.div`
-  width: 100%;
-  margin: 0 auto;
 `;
 
 const CardBody = styled.div`
-  padding: 1rem;
 `;
 
 const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
 `;
 
 const TableRow = styled.tr`
-  &:nth-child(even) {
-    background-color: #f8f9fa;
-  }
 `;
 
 const TableHeader = styled.th`
-  text-align: left;
-  padding: 0.5rem;
-  width: 53%;
 `;
 
 const TableCell = styled.td`
-  padding: 0.5rem;
-  text-align: center;
-  align-items: center;
-  width: 40%;
 `;
 
 const Button = styled.button`
-  &.btn-success {
-    background-color: #28a745;
-    color: #fff;
-  }
-
-  &.btn-danger {
-    background-color: #dc3545;
-    color: #fff;
-  }
-
-  &.d-none {
-    display: none;
-  }
 `;
 
 function UsuarioIndividual({ usuario }) {
@@ -183,20 +153,21 @@ function UsuarioIndividual({ usuario }) {
   };
 
   return (
+    <center>
     <Container>
-      <div className="row justify-content-center">
-        <div className="col-md-8">
+      <div className="">
+        <div className="">
           <StyledCard>
             <div className="cn">
               <CardBody>
-                <Table className="table table-bordered">
+                <Table className="">
                   <tbody>
                     <TableRow>
                       <TableHeader>ID</TableHeader>
                       <TableCell>{usuario.iduser}</TableCell>
                       <TableCell colSpan="2">
                         <Button
-                          className="btn btn-info"
+                          className=""
                           onClick={() => {
                             setMostrarDesglose(!mostrarDesglose);
                           }}>
@@ -206,20 +177,20 @@ function UsuarioIndividual({ usuario }) {
                       <TableCell>
                         <Link
                           to={`/editarusuario/${usuario.iduser}`}
-                          className="btn btn-success">
+                          className="">
                           Editar
                         </Link>
                       </TableCell>
                       <TableCell className="d-none">
                         <Button
-                          className="btn btn-outline-danger"
+                          className=""
                           onClick={generatePDFReport}>
                           Descargar PDF
                         </Button>
                       </TableCell>
                       <TableCell className="">
                         <Button
-                          className="btn btn-danger"
+                          className=""
                           onClick={() => {
                             borrarUsuario(usuario.iduser);
                           }}>
@@ -271,53 +242,7 @@ function UsuarioIndividual({ usuario }) {
         </div>
       </div>
     </Container>
+    </center>
   );
 }
 export default UsuarioIndividual;
-/*const descargarArchivos = () => {
-  const pdf = new jsPDF();
-  pdf.text(20, 20, "Detalles del Usuario");
-
-  pdf.autoPrint({
-    head: [
-      [
-        "ID",
-        "Rol",
-        "Estado del Rol",
-        "Permiso",
-        "Nombre de Usuario",
-        "Email",
-        "Contraseña",
-        "Estado del Usuario",
-        "Fecha de Registro",
-      ],
-    ],
-    body: [
-      [
-        "ID",
-        "Rol",
-        "Estado del Rol",
-        "Permiso",
-        "Nombre de Usuario",
-        "Email",
-        "Contraseña",
-        "Estado del Usuario",
-        "Fecha de Registro",
-      ],
-    ],
-    theme: "striped",
-    styles: { halign: "center" },
-    headStyles: { fillColor: [71, 160, 71] },
-    didParseCell: (data) => {
-      if (data.section === "head") {
-        data.cell.styles.fillColor = [71, 160, 71];
-        data.cell.styles.textColor = [255, 255, 255];
-      }
-    },
-    didDrawCell: (data) => {
-      console.log(data.column.index);
-    },
-  });
-
-  pdf.save("usuario.pdf");
-};*/

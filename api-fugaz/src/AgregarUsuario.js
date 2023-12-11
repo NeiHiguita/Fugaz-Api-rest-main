@@ -7,11 +7,6 @@ import './style.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 
-/*
-    tareas:
-    -pdf para todos los registros con footer y cambiar de lado la fecha 
-*/
-
 function AgregarUsuario() {
   //hooks
   const [name_rol, setNamerol] = useState('');

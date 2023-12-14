@@ -7,6 +7,7 @@ import './style.css';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 
+
 function AgregarUsuario() {
   //hooks
   const [name_rol, setNamerol] = useState('');
